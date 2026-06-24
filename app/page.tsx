@@ -56,7 +56,7 @@ export default function Home() {
 
       <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center">
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-          ⚽
+          
         </div>
         <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-tight">
           Hazte visible.<br/>Encuentra talento.
@@ -75,9 +75,9 @@ export default function Home() {
       <div className="max-w-lg mx-auto px-6 pb-16">
         <div className="grid grid-cols-3 gap-4 mb-12">
           {[
-            { emoji: '👤', titulo: 'Jugadores', desc: 'Sube tus vídeos y muéstrate a los clubs' },
-            { emoji: '🔍', titulo: 'Scouts', desc: 'Encuentra talento en categorías regionales' },
-            { emoji: '🏆', titulo: 'Clubs', desc: 'Gestiona fichajes y contacta directamente' },
+            { titulo: 'Jugadores', desc: 'Sube tus vídeos y muéstrate a los clubs' },
+            { titulo: 'Scouts', desc: 'Encuentra talento en categorías regionales' },
+            { titulo: 'Clubs', desc: 'Gestiona fichajes y contacta directamente' },
           ].map((item) => (
             <div key={item.titulo} className="bg-gray-50 rounded-xl p-4 text-center">
               <div className="text-2xl mb-2">{item.emoji}</div>
