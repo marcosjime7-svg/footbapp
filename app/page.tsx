@@ -80,8 +80,7 @@ export default function Home() {
             { titulo: 'Clubs', desc: 'Gestiona fichajes y contacta directamente' },
           ].map((item) => (
             <div key={item.titulo} className="bg-gray-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">{item.emoji}</div>
-              <p className="text-xs font-medium text-gray-900 mb-1">{item.titulo}</p>
+                            <p className="text-xs font-medium text-gray-900 mb-1">{item.titulo}</p>
               <p className="text-xs text-gray-400 leading-relaxed">{item.desc}</p>
             </div>
           ))}

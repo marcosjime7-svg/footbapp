@@ -15,6 +15,9 @@ export default function PerfilJugador() {
 
   useEffect(() => {
     const fetchJugador = async () => {
+      const { data: userData } = await supabase.auth.getUser()
+      if (!userData.user) { router.push('/auth/login'); return }
+
       const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -48,12 +51,12 @@ export default function PerfilJugador() {
           ← Volver
         </button>
         {jugador.avatar_url ? (
-  <img src={jugador.avatar_url} alt={jugador.nombre} className="w-14 h-14 rounded-full object-cover mb-3" />
-) : (
-  <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg mb-3">
-    {iniciales}
-  </div>
-)}
+          <img src={jugador.avatar_url} alt={jugador.nombre} className="w-14 h-14 rounded-full object-cover mb-3" />
+        ) : (
+          <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg mb-3">
+            {iniciales}
+          </div>
+        )}
         <h1 className="text-white text-xl font-semibold">{jugador.nombre}</h1>
         <p className="text-emerald-200 text-sm">{jugador.posicion} · {jugador.club} · {jugador.categoria}</p>
       </div>
