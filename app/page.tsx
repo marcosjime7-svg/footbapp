@@ -45,7 +45,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <span className="text-lg font-semibold">fut<span className="text-emerald-600">madrid</span></span>
+        <span className="text-lg font-semibold">foot<span className="text-emerald-600">bapp</span></span>
         <div className="flex items-center gap-3">
           {usuario ? (
             <>

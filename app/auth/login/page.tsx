@@ -37,7 +37,7 @@ export default function Login() {
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm">
-        <h1 className="text-lg font-semibold mb-1">fut<span className="text-emerald-600">madrid</span></h1>
+        foot<span className="text-emerald-600">bapp</span>
         <p className="text-sm text-gray-500 mb-6">Entra en tu cuenta</p>
 
         {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
