@@ -3,9 +3,10 @@ import { getUploadUrl } from '../../../utils/r2'
 
 export async function POST(request: NextRequest) {
   try {
-    const { filename, contentType } = await request.json()
+    const { filename, contentType, tipo } = await request.json()
     
-    const key = `videos/${Date.now()}-${filename}`
+    const carpeta = tipo === 'avatar' ? 'avatars' : 'videos'
+    const key = `${carpeta}/${Date.now()}-${filename}`
     const uploadUrl = await getUploadUrl(key, contentType)
     const publicUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`
 

@@ -95,9 +95,13 @@ export default function Home() {
         <div className="flex flex-col gap-3">
           {jugadores.map((j) => (
             <a key={j.id} href={`/jugador/${j.id}`} className="bg-white rounded-xl border border-gray-200 p-4 flex gap-3 items-start cursor-pointer hover:border-emerald-300 transition-colors">
-              <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm shrink-0">
-                {j.nombre?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-              </div>
+              {j.avatar_url ? (
+                <img src={j.avatar_url} alt={j.nombre} className="w-10 h-10 rounded-full object-cover shrink-0" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm shrink-0">
+                  {j.nombre?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-900 text-sm">{j.nombre}</p>
                 <p className="text-xs text-gray-500 mb-2">{j.club} · {j.categoria}</p>

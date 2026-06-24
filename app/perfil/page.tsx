@@ -16,6 +16,7 @@ export default function MiPerfil() {
   const [videos, setVideos] = useState<any[]>([])
   const [subiendo, setSubiendo] = useState(false)
   const [progresoSubida, setProgresoSubida] = useState(0)
+  const [subiendoAvatar, setSubiendoAvatar] = useState(false)
 
   const supabase = createClient()
   const router = useRouter()
@@ -100,7 +101,7 @@ export default function MiPerfil() {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'video' }),
       })
 
       const { uploadUrl, publicUrl } = await res.json()
@@ -128,6 +129,40 @@ export default function MiPerfil() {
     setProgresoSubida(0)
   }
 
+  const handleSubirAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setSubiendoAvatar(true)
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'avatar' }),
+      })
+
+      const { uploadUrl, publicUrl } = await res.json()
+
+      await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      })
+
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', perfil.id)
+
+      setPerfil({ ...perfil, avatar_url: publicUrl })
+    } catch (err) {
+      console.error(err)
+    }
+
+    setSubiendoAvatar(false)
+  }
+
   if (loading) return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><p className="text-gray-400 text-sm">Cargando...</p></div>
 
   const iniciales = perfil?.nombre?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -142,8 +177,25 @@ export default function MiPerfil() {
       <div className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-4">
 
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg shrink-0">
-            {iniciales}
+          <div className="relative shrink-0">
+            {perfil?.avatar_url ? (
+              <img src={perfil.avatar_url} alt={perfil.nombre} className="w-16 h-16 rounded-full object-cover" />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg">
+                {iniciales}
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleSubirAvatar}
+              className="absolute inset-0 opacity-0 cursor-pointer rounded-full"
+              id="avatar-upload"
+              disabled={subiendoAvatar}
+            />
+            <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center cursor-pointer text-white text-xs">
+              {subiendoAvatar ? '...' : '+'}
+            </label>
           </div>
           <div>
             <p className="font-medium text-gray-900">{perfil?.nombre}</p>

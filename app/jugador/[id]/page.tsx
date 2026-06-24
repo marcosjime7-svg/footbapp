@@ -47,9 +47,13 @@ export default function PerfilJugador() {
         <button onClick={() => router.back()} className="text-emerald-200 text-sm mb-4 flex items-center gap-1">
           ← Volver
         </button>
-        <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg mb-3">
-          {iniciales}
-        </div>
+        {jugador.avatar_url ? (
+  <img src={jugador.avatar_url} alt={jugador.nombre} className="w-14 h-14 rounded-full object-cover mb-3" />
+) : (
+  <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-lg mb-3">
+    {iniciales}
+  </div>
+)}
         <h1 className="text-white text-xl font-semibold">{jugador.nombre}</h1>
         <p className="text-emerald-200 text-sm">{jugador.posicion} · {jugador.club} · {jugador.categoria}</p>
       </div>
