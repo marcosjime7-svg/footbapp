@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '../../../utils/supabase/client'
 import { useParams, useRouter } from 'next/navigation'
+import VideoPlayer from '../../components/VideoPlayer'
 
 export default function PerfilJugador() {
   const [jugador, setJugador] = useState<any>(null)
+  const [videos, setVideos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const router = useRouter()
@@ -20,6 +22,14 @@ export default function PerfilJugador() {
         .single()
 
       setJugador(data)
+
+      const { data: videosData } = await supabase
+        .from('videos')
+        .select('*')
+        .eq('jugador_id', params.id)
+        .order('created_at', { ascending: false })
+
+      setVideos(videosData || [])
       setLoading(false)
     }
 
@@ -68,7 +78,12 @@ export default function PerfilJugador() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
           <p className="text-xs text-gray-400 mb-3">Vídeos</p>
-          <p className="text-sm text-gray-400 text-center py-4">Este jugador aún no ha subido vídeos</p>
+          {videos.length === 0 && <p className="text-sm text-gray-400 text-center py-4">Este jugador aún no ha subido vídeos</p>}
+          <div className="flex flex-col gap-4">
+            {videos.map((v) => (
+              <VideoPlayer key={v.id} url={v.url} />
+            ))}
+          </div>
         </div>
 
         <button
