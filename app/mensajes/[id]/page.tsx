@@ -36,6 +36,15 @@ export default function Chat() {
         .order('created_at', { ascending: true })
 
       setMensajes(data || [])
+
+      // Marcar como leídos
+      await supabase
+        .from('mensajes')
+        .update({ leido: true })
+        .eq('para', userData.user.id)
+        .eq('de', params.id as string)
+        .eq('leido', false)
+
       setLoading(false)
     }
     init()

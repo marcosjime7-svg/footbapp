@@ -5,6 +5,34 @@ import { createClient } from '../utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CATEGORIAS } from '../utils/categorias'
 
+function MensajesBadge({ userId }: { userId: string }) {
+  const [count, setCount] = useState(0)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      const { count: c } = await supabase
+        .from('mensajes')
+        .select('*', { count: 'exact', head: true })
+        .eq('para', userId)
+        .eq('leido', false)
+      setCount(c || 0)
+    }
+    fetchCount()
+  }, [userId])
+
+  return (
+    <a href="/mensajes" className="text-sm text-gray-600 flex items-center gap-1">
+      Mensajes
+      {count > 0 && (
+        <span className="bg-emerald-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">
+          {count}
+        </span>
+      )}
+    </a>
+  )
+}
+
 export default function Home() {
   const [jugadores, setJugadores] = useState<any[]>([])
   const [escudos, setEscudos] = useState<Record<string, string>>({})
@@ -37,7 +65,6 @@ export default function Home() {
       const jugadoresList = data || []
       setJugadores(jugadoresList)
 
-      // Buscar escudos de los clubs que aparecen
       const clubsUnicos = [...new Set(jugadoresList.map((j: any) => j.club).filter(Boolean))]
       if (clubsUnicos.length > 0) {
         const { data: clubsData } = await supabase
@@ -72,9 +99,7 @@ export default function Home() {
       </header>
 
       <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center">
-        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-          ⚽
-        </div>
+        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6" />
         <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-tight">
           Hazte visible.<br/>Encuentra talento.
         </h1>
@@ -117,7 +142,7 @@ export default function Home() {
         <span className="text-lg font-semibold">foot<span className="text-emerald-600">bapp</span></span>
         <div className="flex items-center gap-3">
           <a href="/perfil" className="text-sm text-gray-600">Mi perfil</a>
-          <a href="/mensajes" className="text-sm text-gray-600">Mensajes</a>
+          <MensajesBadge userId={usuario.id} />
           <button onClick={handleLogout} className="text-sm text-gray-400">Salir</button>
         </div>
       </header>
