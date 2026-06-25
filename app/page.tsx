@@ -99,7 +99,9 @@ export default function Home() {
       </header>
 
       <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center">
-        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6" />
+        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 overflow-hidden">
+          <img src="/logo.png" alt="Footbapp" className="w-16 h-16 object-contain" />
+        </div>
         <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-tight">
           Hazte visible.<br/>Encuentra talento.
         </h1>
