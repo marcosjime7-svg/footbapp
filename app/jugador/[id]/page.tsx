@@ -8,6 +8,7 @@ import VideoPlayer from '../../components/VideoPlayer'
 export default function PerfilJugador() {
   const [jugador, setJugador] = useState<any>(null)
   const [videos, setVideos] = useState<any[]>([])
+  const [escudoClub, setEscudoClub] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const router = useRouter()
@@ -25,6 +26,16 @@ export default function PerfilJugador() {
         .single()
 
       setJugador(data)
+
+      // Buscar escudo del club
+      if (data?.club) {
+        const { data: clubData } = await supabase
+          .from('clubs')
+          .select('escudo_url')
+          .eq('nombre', data.club)
+          .single()
+        if (clubData?.escudo_url) setEscudoClub(clubData.escudo_url)
+      }
 
       const { data: videosData } = await supabase
         .from('videos')
@@ -58,7 +69,17 @@ export default function PerfilJugador() {
           </div>
         )}
         <h1 className="text-white text-xl font-semibold">{jugador.nombre}</h1>
-        <p className="text-emerald-200 text-sm">{jugador.posicion} · {jugador.club} · {jugador.categoria}</p>
+        <div className="flex items-center gap-2 mt-1">
+          {escudoClub && (
+            <img
+              src={escudoClub}
+              alt={jugador.club}
+              className="w-5 h-5 rounded-full object-contain bg-white p-0.5"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
+          )}
+          <p className="text-emerald-200 text-sm">{jugador.posicion} · {jugador.club} · {jugador.categoria}</p>
+        </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-4">

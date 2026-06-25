@@ -7,6 +7,7 @@ import { CATEGORIAS } from '../utils/categorias'
 
 export default function Home() {
   const [jugadores, setJugadores] = useState<any[]>([])
+  const [escudos, setEscudos] = useState<Record<string, string>>({})
   const [filtro, setFiltro] = useState('Todos')
   const [busqueda, setBusqueda] = useState('')
   const [loading, setLoading] = useState(true)
@@ -33,7 +34,23 @@ export default function Home() {
       if (filtro !== 'Todos') query = query.eq('categoria', filtro)
       if (busqueda) query = query.ilike('nombre', `%${busqueda}%`)
       const { data } = await query
-      setJugadores(data || [])
+      const jugadoresList = data || []
+      setJugadores(jugadoresList)
+
+      // Buscar escudos de los clubs que aparecen
+      const clubsUnicos = [...new Set(jugadoresList.map((j: any) => j.club).filter(Boolean))]
+      if (clubsUnicos.length > 0) {
+        const { data: clubsData } = await supabase
+          .from('clubs')
+          .select('nombre, escudo_url')
+          .in('nombre', clubsUnicos)
+        if (clubsData) {
+          const mapa: Record<string, string> = {}
+          clubsData.forEach((c: any) => { mapa[c.nombre] = c.escudo_url })
+          setEscudos(mapa)
+        }
+      }
+
       setLoading(false)
     }
     fetchJugadores()
@@ -56,7 +73,7 @@ export default function Home() {
 
       <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center">
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-          
+          ⚽
         </div>
         <h1 className="text-3xl font-semibold text-gray-900 mb-4 leading-tight">
           Hazte visible.<br/>Encuentra talento.
@@ -80,7 +97,7 @@ export default function Home() {
             { titulo: 'Clubs', desc: 'Gestiona fichajes y contacta directamente' },
           ].map((item) => (
             <div key={item.titulo} className="bg-gray-50 rounded-xl p-4 text-center">
-                            <p className="text-xs font-medium text-gray-900 mb-1">{item.titulo}</p>
+              <p className="text-xs font-medium text-gray-900 mb-1">{item.titulo}</p>
               <p className="text-xs text-gray-400 leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -146,7 +163,17 @@ export default function Home() {
               )}
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-900 text-sm">{j.nombre}</p>
-                <p className="text-xs text-gray-500 mb-2">{j.club} · {j.categoria}</p>
+                <div className="flex items-center gap-1.5 mb-2">
+                  {escudos[j.club] && (
+                    <img
+                      src={escudos[j.club]}
+                      alt={j.club}
+                      className="w-4 h-4 object-contain"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                    />
+                  )}
+                  <p className="text-xs text-gray-500 truncate">{j.club} · {j.categoria}</p>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {j.posicion && <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">{j.posicion}</span>}
                   {j.edad && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{j.edad} años</span>}

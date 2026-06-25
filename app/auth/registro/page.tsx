@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '../../../utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CATEGORIAS } from '../../../utils/categorias'
+import { useClubs } from '../../../utils/useClubs'
 
 const posiciones = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
@@ -11,6 +12,7 @@ export default function Registro() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [busquedaClub, setBusquedaClub] = useState('')
   const [form, setForm] = useState({
     nombre: '', email: '', password: '', rol: 'jugador',
     club: '', categoria: '', posicion: '', edad: '',
@@ -18,6 +20,7 @@ export default function Registro() {
 
   const router = useRouter()
   const supabase = createClient()
+  const { clubs } = useClubs()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -54,7 +57,7 @@ export default function Registro() {
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm">
-        foot<span className="text-emerald-600">bapp</span>
+        <h1 className="text-lg font-semibold mb-1">foot<span className="text-emerald-600">bapp</span></h1>
         <p className="text-sm text-gray-500 mb-6">Crea tu perfil y hazte visible</p>
 
         {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
@@ -94,7 +97,39 @@ export default function Registro() {
           <div className="flex flex-col gap-3">
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Club actual</label>
-              <input name="club" value={form.club} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" placeholder="Nombre del club" />
+              <input
+                type="text"
+                placeholder="Busca tu club..."
+                value={busquedaClub || form.club}
+                onChange={(e) => {
+                  setBusquedaClub(e.target.value)
+                  setForm({ ...form, club: e.target.value })
+                }}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 mb-1"
+              />
+              {busquedaClub.length > 1 && (
+                <div className="border border-gray-200 rounded-lg overflow-hidden max-h-40 overflow-y-auto">
+                  {clubs
+                    .filter(c => c.nombre.toLowerCase().includes(busquedaClub.toLowerCase()))
+                    .slice(0, 6)
+                    .map(c => (
+                      <div
+                        key={c.id}
+                        onClick={() => {
+                          setForm({ ...form, club: c.nombre })
+                          setBusquedaClub('')
+                        }}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-emerald-50 cursor-pointer border-b border-gray-100 last:border-0"
+                      >
+                        {c.escudo_url && <img src={c.escudo_url} alt="" className="w-5 h-5 object-contain" />}
+                        {c.nombre}
+                      </div>
+                    ))}
+                </div>
+              )}
+              {form.club && !busquedaClub && (
+                <p className="text-xs text-emerald-600 mt-1">✓ {form.club}</p>
+              )}
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
