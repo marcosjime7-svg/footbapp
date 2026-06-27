@@ -5,6 +5,8 @@ import { createClient } from '../utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CATEGORIAS } from '../utils/categorias'
 
+const POSICIONES = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
+
 function MensajesBadge({ userId }: { userId: string }) {
   const [count, setCount] = useState(0)
   const supabase = createClient()
@@ -36,7 +38,8 @@ function MensajesBadge({ userId }: { userId: string }) {
 export default function Home() {
   const [jugadores, setJugadores] = useState<any[]>([])
   const [escudos, setEscudos] = useState<Record<string, string>>({})
-  const [filtro, setFiltro] = useState('Todos')
+  const [filtroCategoria, setFiltroCategoria] = useState('Todos')
+  const [filtroPosicion, setFiltroPosicion] = useState('Todas')
   const [busqueda, setBusqueda] = useState('')
   const [loading, setLoading] = useState(true)
   const [usuario, setUsuario] = useState<any>(null)
@@ -59,8 +62,9 @@ export default function Home() {
     const fetchJugadores = async () => {
       setLoading(true)
       let query = supabase.from('profiles').select('*').eq('rol', 'jugador')
-      if (filtro !== 'Todos') query = query.eq('categoria', filtro)
-      if (busqueda) query = query.ilike('nombre', `%${busqueda}%`)
+      if (filtroCategoria !== 'Todos') query = query.eq('categoria', filtroCategoria)
+      if (filtroPosicion !== 'Todas') query = query.eq('posicion', filtroPosicion)
+      if (busqueda) query = query.or(`nombre.ilike.%${busqueda}%,club.ilike.%${busqueda}%`)
       const { data } = await query
       const jugadoresList = data || []
       setJugadores(jugadoresList)
@@ -81,7 +85,7 @@ export default function Home() {
       setLoading(false)
     }
     fetchJugadores()
-  }, [filtro, busqueda, usuario])
+  }, [filtroCategoria, filtroPosicion, busqueda, usuario])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -158,14 +162,26 @@ export default function Home() {
           className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm mb-3 outline-none focus:border-emerald-500"
         />
 
-        <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+        <div className="flex gap-2 mb-2 overflow-x-auto pb-1">
           {['Todos', ...CATEGORIAS].map((cat) => (
             <span
               key={cat}
-              onClick={() => setFiltro(cat)}
-              className={`shrink-0 text-xs px-3 py-1 rounded-full border cursor-pointer ${filtro === cat ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
+              onClick={() => setFiltroCategoria(cat)}
+              className={`shrink-0 text-xs px-3 py-1 rounded-full border cursor-pointer ${filtroCategoria === cat ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
             >
               {cat}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+          {['Todas', ...POSICIONES].map((pos) => (
+            <span
+              key={pos}
+              onClick={() => setFiltroPosicion(pos)}
+              className={`shrink-0 text-xs px-3 py-1 rounded-full border cursor-pointer ${filtroPosicion === pos ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-white border-gray-200 text-gray-500'}`}
+            >
+              {pos}
             </span>
           ))}
         </div>
@@ -174,7 +190,7 @@ export default function Home() {
 
         {!loading && jugadores.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400 text-sm">No hay jugadores aún</p>
+            <p className="text-gray-400 text-sm">No hay jugadores con estos filtros</p>
           </div>
         )}
 
