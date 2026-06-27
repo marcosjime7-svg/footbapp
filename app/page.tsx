@@ -96,13 +96,13 @@ export default function Home() {
   if (checkingAuth) return null
 
   if (!usuario) return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white flex flex-col">
       <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
         <a href="/auth/login" className="text-sm text-gray-500">Entrar</a>
       </header>
 
-      <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center">
+      <div className="max-w-lg mx-auto px-6 pt-16 pb-10 text-center flex-1">
         <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 overflow-hidden">
           <img src="/logo.png" alt="Footbapp" className="w-16 h-16 object-contain" />
         </div>
@@ -120,7 +120,7 @@ export default function Home() {
         </a>
       </div>
 
-      <div className="max-w-lg mx-auto px-6 pb-16">
+      <div className="max-w-lg mx-auto px-6 pb-8 w-full">
         <div className="grid grid-cols-3 gap-4 mb-12">
           {[
             { titulo: 'Jugadores', desc: 'Sube tus vídeos y muéstrate a los clubs' },
@@ -134,11 +134,19 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="bg-emerald-50 rounded-2xl p-6 text-center">
+        <div className="bg-emerald-50 rounded-2xl p-6 text-center mb-12">
           <p className="text-sm font-medium text-emerald-800 mb-1">Fútbol amateur de Madrid</p>
           <p className="text-xs text-emerald-600">3ª RFEF · Preferente · Autonómica · Regional</p>
         </div>
       </div>
+
+      <footer className="border-t border-gray-100 py-6 text-center">
+        <p className="text-xs text-gray-400 mb-2">© 2026 Footbapp · app.footbapp@gmail.com</p>
+        <div className="flex items-center justify-center gap-4">
+          <a href="/privacidad" className="text-xs text-gray-400 hover:text-emerald-600">Privacidad</a>
+          <a href="/terminos" className="text-xs text-gray-400 hover:text-emerald-600">Términos</a>
+        </div>
+      </footer>
     </main>
   )
 
