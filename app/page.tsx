@@ -115,8 +115,11 @@ export default function Home() {
         <a href="/auth/registro" className="block w-full bg-emerald-600 text-white rounded-xl py-3.5 text-sm font-medium mb-3">
           Crear perfil gratis
         </a>
-        <a href="/auth/login" className="block w-full border border-gray-200 text-gray-600 rounded-xl py-3.5 text-sm">
+        <a href="/auth/login" className="block w-full border border-gray-200 text-gray-600 rounded-xl py-3.5 text-sm mb-2">
           Ya tengo cuenta
+        </a>
+        <a href="/como-funciona" className="block w-full text-center text-sm text-gray-400 py-2">
+          ¿Cómo funciona? →
         </a>
       </div>
 
