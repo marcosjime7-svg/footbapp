@@ -5,6 +5,7 @@ import { createClient } from '../../../utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CATEGORIAS } from '../../../utils/categorias'
 import { useClubs } from '../../../utils/useClubs'
+import { Turnstile } from '@marsidev/react-turnstile'
 
 const posiciones = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
@@ -14,6 +15,7 @@ export default function Registro() {
   const [error, setError] = useState('')
   const [registrado, setRegistrado] = useState(false)
   const [mayorEdad, setMayorEdad] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
   const [busquedaClub, setBusquedaClub] = useState('')
   const [form, setForm] = useState({
     nombre: '', email: '', password: '', rol: 'jugador',
@@ -40,6 +42,19 @@ export default function Registro() {
   const handleSubmit = async () => {
     setLoading(true)
     setError('')
+
+    // Verificar Turnstile
+    const turnstileRes = await fetch('/api/verify-turnstile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: turnstileToken }),
+    })
+    const turnstileData = await turnstileRes.json()
+    if (!turnstileData.success) {
+      setError('Verificación de seguridad fallida. Inténtalo de nuevo.')
+      setLoading(false)
+      return
+    }
 
     const { error: signUpError } = await supabase.auth.signUp({
       email: form.email,
@@ -190,7 +205,11 @@ export default function Registro() {
                 </div>
               </>
             )}
-            <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2 disabled:opacity-50">
+            <Turnstile
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              onSuccess={(token) => setTurnstileToken(token)}
+            />
+            <button onClick={handleSubmit} disabled={loading || !turnstileToken} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2 disabled:opacity-50">
               {loading ? 'Creando cuenta...' : 'Crear cuenta gratis'}
             </button>
             <button onClick={() => setStep(1)} className="text-xs text-gray-400 text-center">← Volver</button>
