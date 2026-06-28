@@ -23,6 +23,7 @@ export default function MiPerfil() {
   const [progresoSubida, setProgresoSubida] = useState(0)
   const [subiendoAvatar, setSubiendoAvatar] = useState(false)
   const [busquedaClub, setBusquedaClub] = useState('')
+  const [errorSubida, setErrorSubida] = useState('')
 
   const supabase = createClient()
   const router = useRouter()
@@ -129,13 +130,16 @@ export default function MiPerfil() {
     if (!file) return
     setSubiendo(true)
     setProgresoSubida(0)
+    setErrorSubida('')
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'video' }),
+        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'video', fileSize: file.size }),
       })
-      const { uploadUrl, publicUrl } = await res.json()
+      const json = await res.json()
+      if (!res.ok) { setErrorSubida(json.error); setSubiendo(false); return }
+      const { uploadUrl, publicUrl } = json
       await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
       setProgresoSubida(100)
       const { data } = await supabase
@@ -153,13 +157,16 @@ export default function MiPerfil() {
     const file = e.target.files?.[0]
     if (!file) return
     setSubiendoAvatar(true)
+    setErrorSubida('')
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'avatar' }),
+        body: JSON.stringify({ filename: file.name, contentType: file.type, tipo: 'avatar', fileSize: file.size }),
       })
-      const { uploadUrl, publicUrl } = await res.json()
+      const json = await res.json()
+      if (!res.ok) { setErrorSubida(json.error); setSubiendoAvatar(false); return }
+      const { uploadUrl, publicUrl } = json
       await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
       await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', perfil.id)
       setPerfil({ ...perfil, avatar_url: publicUrl })
@@ -179,6 +186,12 @@ export default function MiPerfil() {
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-4">
+
+        {errorSubida && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            <p className="text-red-600 text-sm">{errorSubida}</p>
+          </div>
+        )}
 
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
           <div className="relative shrink-0">
@@ -281,10 +294,8 @@ export default function MiPerfil() {
           <textarea name="descripcion" value={perfil?.descripcion || ''} onChange={handleChange} rows={3} placeholder="Cuéntale a los scouts quién eres..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 resize-none" />
         </div>
 
-        {/* TRAYECTORIA */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Trayectoria</p>
-
           <div className="flex flex-col gap-2">
             <input
               type="text"
@@ -315,7 +326,6 @@ export default function MiPerfil() {
               + Añadir
             </button>
           </div>
-
           {trayectoria.length === 0 && <p className="text-xs text-gray-400 text-center py-2">Aún no has añadido trayectoria</p>}
           {trayectoria.map(t => (
             <div key={t.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
