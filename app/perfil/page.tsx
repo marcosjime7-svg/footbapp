@@ -8,6 +8,8 @@ import { useClubs } from '../../utils/useClubs'
 
 const posiciones = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
+const TEMPORADAS = ['2024/25', '2023/24', '2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '2017/18']
+
 export default function MiPerfil() {
   const [perfil, setPerfil] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -15,6 +17,8 @@ export default function MiPerfil() {
   const [guardado, setGuardado] = useState(false)
   const [nuevoVideo, setNuevoVideo] = useState('')
   const [videos, setVideos] = useState<any[]>([])
+  const [trayectoria, setTrayectoria] = useState<any[]>([])
+  const [nuevaEntrada, setNuevaEntrada] = useState({ club: '', categoria: '', temporada: '' })
   const [subiendo, setSubiendo] = useState(false)
   const [progresoSubida, setProgresoSubida] = useState(0)
   const [subiendoAvatar, setSubiendoAvatar] = useState(false)
@@ -44,6 +48,14 @@ export default function MiPerfil() {
         .order('created_at', { ascending: false })
 
       setVideos(videosData || [])
+
+      const { data: trayectoriaData } = await supabase
+        .from('trayectoria')
+        .select('*')
+        .eq('jugador_id', userData.user.id)
+        .order('temporada', { ascending: false })
+
+      setTrayectoria(trayectoriaData || [])
       setLoading(false)
     }
     init()
@@ -91,6 +103,25 @@ export default function MiPerfil() {
   const handleBorrarVideo = async (id: string) => {
     await supabase.from('videos').delete().eq('id', id)
     setVideos(videos.filter(v => v.id !== id))
+  }
+
+  const handleAnadirTrayectoria = async () => {
+    if (!nuevaEntrada.club.trim()) return
+    const { data } = await supabase
+      .from('trayectoria')
+      .insert({ jugador_id: perfil.id, ...nuevaEntrada })
+      .select()
+      .single()
+
+    if (data) {
+      setTrayectoria([data, ...trayectoria])
+      setNuevaEntrada({ club: '', categoria: '', temporada: '' })
+    }
+  }
+
+  const handleBorrarTrayectoria = async (id: string) => {
+    await supabase.from('trayectoria').delete().eq('id', id)
+    setTrayectoria(trayectoria.filter(t => t.id !== id))
   }
 
   const handleSubirVideo = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,6 +281,53 @@ export default function MiPerfil() {
           <textarea name="descripcion" value={perfil?.descripcion || ''} onChange={handleChange} rows={3} placeholder="Cuéntale a los scouts quién eres..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 resize-none" />
         </div>
 
+        {/* TRAYECTORIA */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Trayectoria</p>
+
+          <div className="flex flex-col gap-2">
+            <input
+              type="text"
+              placeholder="Club"
+              value={nuevaEntrada.club}
+              onChange={(e) => setNuevaEntrada({ ...nuevaEntrada, club: e.target.value })}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500"
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <select
+                value={nuevaEntrada.categoria}
+                onChange={(e) => setNuevaEntrada({ ...nuevaEntrada, categoria: e.target.value })}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500"
+              >
+                <option value="">Categoría</option>
+                {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <select
+                value={nuevaEntrada.temporada}
+                onChange={(e) => setNuevaEntrada({ ...nuevaEntrada, temporada: e.target.value })}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500"
+              >
+                <option value="">Temporada</option>
+                {TEMPORADAS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <button onClick={handleAnadirTrayectoria} className="w-full border border-emerald-400 text-emerald-600 rounded-lg py-2 text-sm font-medium hover:bg-emerald-50">
+              + Añadir
+            </button>
+          </div>
+
+          {trayectoria.length === 0 && <p className="text-xs text-gray-400 text-center py-2">Aún no has añadido trayectoria</p>}
+          {trayectoria.map(t => (
+            <div key={t.id} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-700">{t.club}</p>
+                <p className="text-xs text-gray-400">{t.categoria} · {t.temporada}</p>
+              </div>
+              <button onClick={() => handleBorrarTrayectoria(t.id)} className="text-gray-300 hover:text-red-400 text-xs">✕</button>
+            </div>
+          ))}
+        </div>
+
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Vídeos</p>
           <div className="flex gap-2">
@@ -259,7 +337,7 @@ export default function MiPerfil() {
           <div className="relative">
             <input type="file" accept="video/*" onChange={handleSubirVideo} className="absolute inset-0 opacity-0 cursor-pointer" id="video-upload" disabled={subiendo} />
             <label htmlFor="video-upload" className={`flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded-lg py-4 text-sm cursor-pointer hover:border-emerald-400 transition-colors ${subiendo ? 'opacity-50' : ''}`}>
-              {subiendo ? <span className="text-gray-400">Subiendo... {progresoSubida}%</span> : <span className="text-gray-400">📱 Subir vídeo desde galería</span>}
+              {subiendo ? <span className="text-gray-400">Subiendo... {progresoSubida}%</span> : <span className="text-gray-400">Subir vídeo desde galería</span>}
             </label>
           </div>
           {videos.length === 0 && <p className="text-xs text-gray-400 text-center py-2">Aún no has añadido vídeos</p>}

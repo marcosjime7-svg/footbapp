@@ -12,6 +12,8 @@ export default function Registro() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [registrado, setRegistrado] = useState(false)
+  const [mayorEdad, setMayorEdad] = useState(false)
   const [busquedaClub, setBusquedaClub] = useState('')
   const [form, setForm] = useState({
     nombre: '', email: '', password: '', rol: 'jugador',
@@ -24,6 +26,15 @@ export default function Registro() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSiguiente = () => {
+    if (!mayorEdad) {
+      setError('Debes confirmar que tienes 16 años o más')
+      return
+    }
+    setError('')
+    setStep(2)
   }
 
   const handleSubmit = async () => {
@@ -51,8 +62,25 @@ export default function Registro() {
       return
     }
 
-    router.push('/')
+    setRegistrado(true)
+    setLoading(false)
   }
+
+  if (registrado) return (
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm text-center">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Revisa tu email</h2>
+        <p className="text-sm text-gray-500 leading-relaxed mb-6">
+          Te hemos enviado un email de confirmación a <strong>{form.email}</strong>. Haz click en el enlace para activar tu cuenta.
+        </p>
+        <p className="text-xs text-gray-400">¿No lo ves? Revisa la carpeta de spam.</p>
+        <a href="/auth/login" className="block w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-6">
+          Ir al login
+        </a>
+      </div>
+    </main>
+  )
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -86,7 +114,16 @@ export default function Registro() {
                 ))}
               </div>
             </div>
-            <button onClick={() => setStep(2)} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2">
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={mayorEdad}
+                onChange={(e) => setMayorEdad(e.target.checked)}
+                className="mt-0.5 accent-emerald-600"
+              />
+              <span className="text-xs text-gray-500">Confirmo que tengo 16 años o más y acepto los <a href="/terminos" className="text-emerald-600">Términos</a> y la <a href="/privacidad" className="text-emerald-600">Política de Privacidad</a></span>
+            </label>
+            <button onClick={handleSiguiente} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2">
               Siguiente →
             </button>
             <p className="text-center text-xs text-gray-400">¿Ya tienes cuenta? <a href="/auth/login" className="text-emerald-600">Entra aquí</a></p>
@@ -156,7 +193,6 @@ export default function Registro() {
             <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2 disabled:opacity-50">
               {loading ? 'Creando cuenta...' : 'Crear cuenta gratis'}
             </button>
-            <p className="text-center text-xs text-gray-400">Acceso completo por <strong className="text-gray-600">2,99€ pago único</strong> al verificar perfil</p>
             <button onClick={() => setStep(1)} className="text-xs text-gray-400 text-center">← Volver</button>
           </div>
         )}
