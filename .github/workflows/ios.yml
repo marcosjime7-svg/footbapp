@@ -21,8 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Sync Capacitor
-        run: npx cap sync ios
+      - name: Remove and regenerate iOS platform
+        run: |
+          rm -rf ios
+          npx cap add ios
+          npx cap sync ios
 
       - name: Install CocoaPods
         run: |
