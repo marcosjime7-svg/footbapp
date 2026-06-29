@@ -41,6 +41,10 @@ jobs:
           }
           EOF
 
+      - name: Bump build number
+        run: |
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 2" ios/App/App/Info.plist
+
       - name: Setup certificates
         env:
           IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
