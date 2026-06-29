@@ -27,16 +27,6 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
-      - name: Check iOS folder
-        run: |
-          ls -la ios/
-          ls -la ios/App/ || echo "No App folder"
-
-      - name: Install CocoaPods
-        run: |
-          cd ios/App
-          pod install --repo-update
-
       - name: Import Distribution Certificate
         env:
           IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
