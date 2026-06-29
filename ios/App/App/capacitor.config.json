@@ -1,0 +1,10 @@
+{
+	"appId": "app.footbapp",
+	"appName": "Footbapp",
+	"webDir": "out",
+	"server": {
+		"url": "https://footbapp.app",
+		"cleartext": true
+	},
+	"packageClassList": []
+}
