@@ -31,11 +31,11 @@ jobs:
         run: |
           ICON_DIR="ios/App/App/Assets.xcassets/AppIcon.appiconset"
           mkdir -p "$ICON_DIR"
-          cp public/icon_512x512.png "$ICON_DIR/Icon-512.png"
+          cp public/icon_1024x1024.png "$ICON_DIR/Icon-1024.png"
           cat > "$ICON_DIR/Contents.json" << 'EOF'
           {
             "images": [
-              {"idiom": "universal", "platform": "ios", "size": "1024x1024", "scale": "1x", "filename": "Icon-512.png"}
+              {"idiom": "universal", "platform": "ios", "size": "1024x1024", "scale": "1x", "filename": "Icon-1024.png"}
             ],
             "info": {"author": "xcode", "version": 1}
           }
