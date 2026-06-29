@@ -27,8 +27,14 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
-      - name: Install Fastlane
-        run: sudo gem install fastlane
+      - name: Debug p12
+        env:
+          IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+        run: |
+          echo "$IOS_DISTRIBUTION_P12" | base64 --decode > /tmp/test.p12
+          file /tmp/test.p12
+          openssl pkcs12 -in /tmp/test.p12 -passin "pass:$IOS_DISTRIBUTION_P12_PASSWORD" -nokeys -info 2>&1 | head -10
 
       - name: Setup certificates
         env:
