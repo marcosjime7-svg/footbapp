@@ -27,6 +27,11 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
+      - name: Check iOS folder
+        run: |
+          ls -la ios/
+          ls -la ios/App/ || echo "No App folder"
+
       - name: Install CocoaPods
         run: |
           cd ios/App
