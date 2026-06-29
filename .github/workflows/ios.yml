@@ -27,7 +27,7 @@ jobs:
       - name: Install CocoaPods
         run: |
           cd ios/App
-          pod install
+          pod install --repo-update
 
       - name: Import Distribution Certificate
         env:
