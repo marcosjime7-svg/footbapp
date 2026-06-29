@@ -8,6 +8,9 @@ const config: CapacitorConfig = {
     url: 'https://footbapp.app',
     cleartext: true,
   },
+  ios: {
+    buildNumber: '2',
+  },
 };
 
 export default config;
