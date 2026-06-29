@@ -27,10 +27,6 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
-      - name: Check iOS structure
-        run: |
-          find ios/App -name "*.xcworkspace" -o -name "*.xcodeproj" 2>/dev/null
-
       - name: Setup certificates
         env:
           IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
@@ -50,7 +46,7 @@ jobs:
 
       - name: Build iOS App
         run: |
-          xcodebuild -workspace ios/App/App.xcworkspace \
+          xcodebuild -workspace ios/App/App.xcodeproj/project.xcworkspace \
             -scheme App \
             -configuration Release \
             -archivePath $PWD/build/App.xcarchive \
