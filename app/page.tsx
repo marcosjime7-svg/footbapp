@@ -155,7 +155,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <span className="text-lg font-semibold">foot<span className="text-emerald-600">bapp</span></span>
         <div className="flex items-center gap-3">
           <a href="/perfil" className="text-sm text-gray-600">Mi perfil</a>
