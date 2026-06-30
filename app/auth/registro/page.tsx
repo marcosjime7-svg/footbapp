@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '../../../utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { CATEGORIAS } from '../../../utils/categorias'
+import { CATEGORIAS_AFICIONADO, CATEGORIAS_JUVENIL } from '../../../utils/categorias'
 import { useClubs } from '../../../utils/useClubs'
 import { Turnstile } from '@marsidev/react-turnstile'
 
@@ -19,7 +19,7 @@ export default function Registro() {
   const [busquedaClub, setBusquedaClub] = useState('')
   const [form, setForm] = useState({
     nombre: '', email: '', password: '', rol: 'jugador',
-    club: '', categoria: '', posicion: '', edad: '',
+    club: '', categoria: '', posicion: '', edad: '', tipoFutbol: '',
   })
 
   const router = useRouter()
@@ -184,11 +184,33 @@ export default function Registro() {
               )}
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
-              <select name="categoria" value={form.categoria} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500">
-                <option value="">Selecciona categoría</option>
-                {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <label className="text-xs text-gray-500 mb-1 block">Tipo de fútbol</label>
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, tipoFutbol: 'aficionado', categoria: '' })}
+                  className={`flex-1 text-sm py-2 rounded-lg border ${form.tipoFutbol === 'aficionado' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
+                >
+                  Aficionado
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, tipoFutbol: 'juvenil', categoria: '' })}
+                  className={`flex-1 text-sm py-2 rounded-lg border ${form.tipoFutbol === 'juvenil' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
+                >
+                  Juvenil
+                </button>
+              </div>
+
+              {form.tipoFutbol && (
+                <>
+                  <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
+                  <select name="categoria" value={form.categoria} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500">
+                    <option value="">Selecciona categoría</option>
+                    {(form.tipoFutbol === 'aficionado' ? CATEGORIAS_AFICIONADO : CATEGORIAS_JUVENIL).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </>
+              )}
             </div>
             {form.rol === 'jugador' && (
               <>

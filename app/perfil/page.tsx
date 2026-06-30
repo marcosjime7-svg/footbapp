@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '../../utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { CATEGORIAS } from '../../utils/categorias'
+import { CATEGORIAS, CATEGORIAS_AFICIONADO, CATEGORIAS_JUVENIL } from '../../utils/categorias'
 import { useClubs } from '../../utils/useClubs'
 
 const posiciones = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
@@ -274,10 +274,33 @@ export default function MiPerfil() {
             )}
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
-            <select name="categoria" value={perfil?.categoria || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500">
-              {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <label className="text-xs text-gray-500 mb-1 block">Tipo de fútbol</label>
+            <div className="flex gap-2 mb-2">
+              <button
+                type="button"
+                onClick={() => setPerfil({ ...perfil, tipoFutbol: 'aficionado', categoria: '' })}
+                className={`flex-1 text-sm py-2 rounded-lg border ${perfil?.tipoFutbol === 'aficionado' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
+              >
+                Aficionado
+              </button>
+              <button
+                type="button"
+                onClick={() => setPerfil({ ...perfil, tipoFutbol: 'juvenil', categoria: '' })}
+                className={`flex-1 text-sm py-2 rounded-lg border ${perfil?.tipoFutbol === 'juvenil' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
+              >
+                Juvenil
+              </button>
+            </div>
+
+            {perfil?.tipoFutbol && (
+              <>
+                <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
+                <select name="categoria" value={perfil?.categoria || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500">
+                  <option value="">Selecciona categoría</option>
+                  {(perfil.tipoFutbol === 'aficionado' ? CATEGORIAS_AFICIONADO : CATEGORIAS_JUVENIL).map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </>
+            )}
           </div>
           {perfil?.rol === 'jugador' && (
             <div>
