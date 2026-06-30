@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '../utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { CATEGORIAS } from '../utils/categorias'
+import { CATEGORIAS_AFICIONADO, CATEGORIAS_JUVENIL } from '../utils/categorias'
 
 const POSICIONES = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
@@ -38,7 +38,8 @@ function MensajesBadge({ userId }: { userId: string }) {
 export default function Home() {
   const [jugadores, setJugadores] = useState<any[]>([])
   const [escudos, setEscudos] = useState<Record<string, string>>({})
-  const [filtroCategoria, setFiltroCategoria] = useState('Todos')
+  const [tipoFutbol, setTipoFutbol] = useState<string | null>(null)
+  const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroPosicion, setFiltroPosicion] = useState('Todas')
   const [busqueda, setBusqueda] = useState('')
   const [loading, setLoading] = useState(true)
@@ -62,7 +63,8 @@ export default function Home() {
     const fetchJugadores = async () => {
       setLoading(true)
       let query = supabase.from('profiles').select('*').eq('rol', 'jugador')
-      if (filtroCategoria !== 'Todos') query = query.eq('categoria', filtroCategoria)
+      if (tipoFutbol) query = query.eq('tipoFutbol', tipoFutbol)
+      if (filtroCategoria) query = query.eq('categoria', filtroCategoria)
       if (filtroPosicion !== 'Todas') query = query.eq('posicion', filtroPosicion)
       if (busqueda) query = query.or(`nombre.ilike.%${busqueda}%,club.ilike.%${busqueda}%`)
       const { data } = await query
@@ -85,7 +87,7 @@ export default function Home() {
       setLoading(false)
     }
     fetchJugadores()
-  }, [filtroCategoria, filtroPosicion, busqueda, usuario])
+  }, [tipoFutbol, filtroCategoria, filtroPosicion, busqueda, usuario])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -173,17 +175,40 @@ export default function Home() {
           className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm mb-3 outline-none focus:border-emerald-500"
         />
 
-        <div className="flex gap-2 mb-2 overflow-x-auto pb-1">
-          {['Todos', ...CATEGORIAS].map((cat) => (
-            <span
-              key={cat}
-              onClick={() => setFiltroCategoria(cat)}
-              className={`shrink-0 text-xs px-3 py-1 rounded-full border cursor-pointer ${filtroCategoria === cat ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border-gray-200 text-gray-500'}`}
-            >
-              {cat}
-            </span>
-          ))}
+        <div className="flex gap-2 overflow-x-auto px-4 mb-3">
+          <button
+            onClick={() => { setTipoFutbol(null); setFiltroCategoria('') }}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${!tipoFutbol ? 'bg-emerald-100 border border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
+          >
+            Todos
+          </button>
+          <button
+            onClick={() => { setTipoFutbol('aficionado'); setFiltroCategoria('') }}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${tipoFutbol === 'aficionado' ? 'bg-emerald-100 border border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
+          >
+            Aficionado
+          </button>
+          <button
+            onClick={() => { setTipoFutbol('juvenil'); setFiltroCategoria('') }}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${tipoFutbol === 'juvenil' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
+          >
+            Juvenil
+          </button>
         </div>
+
+        {tipoFutbol && (
+          <div className="flex gap-2 overflow-x-auto px-4 mb-3">
+            {(tipoFutbol === 'aficionado' ? CATEGORIAS_AFICIONADO : CATEGORIAS_JUVENIL).map(c => (
+              <button
+                key={c}
+                onClick={() => setFiltroCategoria(c === filtroCategoria ? '' : c)}
+                className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${filtroCategoria === c ? 'bg-emerald-100 border border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
           {['Todas', ...POSICIONES].map((pos) => (
