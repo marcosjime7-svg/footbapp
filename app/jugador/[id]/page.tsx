@@ -146,21 +146,6 @@ export default function PerfilJugador() {
           </div>
         )}
 
-        {/* Verificación pendiente */}
-        {!jugador.verificado && jugador.licencia && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
-            <p className="text-xs text-amber-600 font-medium">Verificación pendiente</p>
-            <p className="text-xs text-amber-500 mt-0.5">Licencia nº {jugador.licencia} · En revisión</p>
-          </div>
-        )}
-
-        {/* Sin licencia = invitar a verificarse */}
-        {!jugador.verificado && !jugador.licencia && (
-          <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 mb-4">
-            <p className="text-xs text-gray-500">¿Eres este jugador? Añade tu nº de licencia federativa en tu perfil para solicitar la verificación.</p>
-          </div>
-        )}
-
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
           <p className="text-xs text-gray-400 mb-3">Vídeos</p>
           {videos.length === 0 && <p className="text-sm text-gray-400 text-center py-4">Este jugador aún no ha subido vídeos</p>}

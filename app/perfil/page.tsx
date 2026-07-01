@@ -345,28 +345,6 @@ export default function MiPerfil() {
           </div>
         )}
 
-        {perfil?.rol === 'jugador' && (
-          <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Verificación</p>
-            {perfil?.verificado ? (
-              <div className="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-2">
-                <span className="text-emerald-600 text-sm font-medium">✓ Perfil verificado</span>
-              </div>
-            ) : (
-              <>
-                <p className="text-xs text-gray-400">Introduce tu nº de licencia federativa para solicitar la verificación. Lo revisaremos manualmente.</p>
-                <div>
-                  <label className="text-xs text-gray-500 mb-1 block">Nº de licencia federativa</label>
-                  <input name="licencia" type="text" placeholder="ej: 277012345" value={perfil?.licencia || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
-                </div>
-                {perfil?.licencia && (
-                  <p className="text-xs text-amber-500">Pendiente de revisión · Guarda los cambios para enviar la solicitud</p>
-                )}
-              </>
-            )}
-          </div>
-        )}
-
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Trayectoria</p>
           <div className="flex flex-col gap-2">
