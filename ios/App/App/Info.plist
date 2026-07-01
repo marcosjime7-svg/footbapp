@@ -47,5 +47,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Footbapp necesita acceso a la cámara para subir tu foto de perfil y vídeos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Footbapp necesita acceso al micrófono para grabar vídeos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Footbapp necesita acceso a tus fotos para subir tu foto de perfil y vídeos.</string>
 </dict>
 </plist>

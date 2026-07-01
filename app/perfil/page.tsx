@@ -158,6 +158,18 @@ export default function MiPerfil() {
     setProgresoSubida(0)
   }
 
+  const handleEliminarCuenta = async () => {
+    if (!confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) return
+    const res = await fetch('/api/delete-account', { method: 'POST' })
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      setErrorSubida(json.error || 'Error eliminando la cuenta')
+      return
+    }
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
   const handleSubirAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -412,6 +424,13 @@ export default function MiPerfil() {
 
         <button onClick={handleGuardar} disabled={guardando} className="w-full bg-emerald-600 text-white rounded-xl py-3 text-sm font-medium disabled:opacity-50">
           {guardado ? '✓ Guardado' : guardando ? 'Guardando...' : 'Guardar cambios'}
+        </button>
+
+        <button
+          onClick={handleEliminarCuenta}
+          className="w-full border border-red-200 text-red-400 rounded-xl py-3 text-sm font-medium mt-2"
+        >
+          Eliminar cuenta
         </button>
       </div>
     </main>
