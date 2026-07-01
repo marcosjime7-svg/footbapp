@@ -38,6 +38,7 @@ function MensajesBadge({ userId }: { userId: string }) {
 export default function Home() {
   const [jugadores, setJugadores] = useState<any[]>([])
   const [escudos, setEscudos] = useState<Record<string, string>>({})
+  const [escudosLanding, setEscudosLanding] = useState<any[]>([])
   const [tipoFutbol, setTipoFutbol] = useState<string | null>(null)
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroPosicion, setFiltroPosicion] = useState('Todas')
@@ -56,6 +57,18 @@ export default function Home() {
       setCheckingAuth(false)
     }
     fetchUsuario()
+  }, [])
+
+  useEffect(() => {
+    const fetchEscudosLanding = async () => {
+      const { data } = await supabase
+        .from('clubs')
+        .select('nombre, escudo_url')
+        .not('escudo_url', 'is', null)
+        .limit(40)
+      setEscudosLanding(data || [])
+    }
+    fetchEscudosLanding()
   }, [])
 
   useEffect(() => {
@@ -102,7 +115,7 @@ export default function Home() {
       <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div className="flex items-center gap-3">
           <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
-          <a
+          
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"
@@ -149,10 +162,23 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="bg-emerald-50 rounded-2xl p-6 text-center mb-12">
-          <p className="text-sm font-medium text-emerald-800 mb-1">Fútbol amateur de Madrid</p>
-          <p className="text-xs text-emerald-600">3ª RFEF · Preferente · Autonómica · Regional</p>
-        </div>
+        {escudosLanding.length > 0 && (
+          <div className="mb-12">
+            <p className="text-xs text-gray-400 text-center mb-4">Clubs en Footbapp</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {escudosLanding.map((c) => (
+                <img
+                  key={c.nombre}
+                  src={c.escudo_url}
+                  alt={c.nombre}
+                  title={c.nombre}
+                  className="w-8 h-8 object-contain opacity-70 hover:opacity-100 transition-opacity"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <footer className="border-t border-gray-100 py-6 text-center">
@@ -200,7 +226,7 @@ export default function Home() {
           </button>
           <button
             onClick={() => { setTipoFutbol('juvenil'); setFiltroCategoria('') }}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${tipoFutbol === 'juvenil' ? 'bg-emerald-100 border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${tipoFutbol === 'juvenil' ? 'bg-emerald-100 border border-emerald-400 text-emerald-700' : 'bg-white border border-gray-200 text-gray-600'}`}
           >
             Juvenil
           </button>
@@ -273,7 +299,7 @@ export default function Home() {
         </div>
 
         <div className="pb-6 pt-2 flex justify-center">
-          <a
+          
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"
