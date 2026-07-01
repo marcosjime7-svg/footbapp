@@ -100,7 +100,17 @@ export default function Home() {
   if (!usuario) return (
     <main className="min-h-screen bg-white flex flex-col">
       <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100">
-        <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
+        <div className="flex items-center gap-3">
+          <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
+          <a
+            href="https://www.instagram.com/footbapp.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-emerald-600 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </a>
+        </div>
         <a href="/auth/login" className="text-sm text-gray-500">Entrar</a>
       </header>
 
@@ -156,7 +166,7 @@ export default function Home() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 pb-20">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <span className="text-lg font-semibold">foot<span className="text-emerald-600">bapp</span></span>
         <div className="flex items-center gap-3">
