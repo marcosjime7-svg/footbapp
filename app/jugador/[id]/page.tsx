@@ -27,7 +27,6 @@ export default function PerfilJugador() {
 
       setJugador(data)
 
-      // Buscar escudo del club
       if (data?.club) {
         const { data: clubData } = await supabase
           .from('clubs')
@@ -55,6 +54,30 @@ export default function PerfilJugador() {
 
   const iniciales = jugador.nombre?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
 
+  // Fix altura: si es menor de 100 probablemente metió mal el dato
+  const alturaDisplay = jugador.altura && jugador.altura >= 100 ? `${jugador.altura}cm` : '—'
+
+  const stats = [
+    { val: jugador.edad ?? '—', lbl: 'Edad' },
+    { val: alturaDisplay, lbl: 'Altura' },
+    { val: jugador.temporadas || '—', lbl: 'Temporadas' },
+    {
+      val: jugador.verificado
+        ? <span className="text-emerald-600 text-xl">✓</span>
+        : '—',
+      lbl: 'Verificado'
+    },
+  ]
+
+  const statsTemporada = [
+    { val: jugador.partidos ?? '—', lbl: 'Partidos' },
+    { val: jugador.minutos ?? '—', lbl: 'Minutos' },
+    { val: jugador.goles ?? '—', lbl: 'Goles' },
+    { val: jugador.asistencias ?? '—', lbl: 'Asistencias' },
+  ]
+
+  const tieneStats = jugador.partidos || jugador.minutos || jugador.goles || jugador.asistencias
+
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="bg-emerald-700 px-4 pt-4 pb-6">
@@ -68,7 +91,14 @@ export default function PerfilJugador() {
             {iniciales}
           </div>
         )}
-        <h1 className="text-white text-xl font-semibold">{jugador.nombre}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-white text-xl font-semibold">{jugador.nombre}</h1>
+          {jugador.verificado && (
+            <span className="bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+              ✓ Verificado
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2 mt-1">
           {escudoClub && (
             <img
@@ -83,13 +113,10 @@ export default function PerfilJugador() {
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-4">
-        <div className="grid grid-cols-4 gap-2 mb-6">
-          {[
-            { val: jugador.edad, lbl: 'Edad' },
-            { val: jugador.altura ? `${jugador.altura}cm` : '—', lbl: 'Altura' },
-            { val: jugador.temporadas || '—', lbl: 'Temporadas' },
-            { val: jugador.verificado ? '✓' : '—', lbl: 'Verificado' },
-          ].map((s) => (
+
+        {/* Stats perfil */}
+        <div className="grid grid-cols-4 gap-2 mb-4">
+          {stats.map((s) => (
             <div key={s.lbl} className="bg-white rounded-xl border border-gray-200 p-3 text-center">
               <span className="block text-lg font-semibold text-gray-900">{s.val}</span>
               <span className="text-xs text-gray-400">{s.lbl}</span>
@@ -97,10 +124,40 @@ export default function PerfilJugador() {
           ))}
         </div>
 
+        {/* Stats temporada */}
+        {tieneStats && (
+          <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
+            <p className="text-xs text-gray-400 mb-3">Temporada actual</p>
+            <div className="grid grid-cols-4 gap-2">
+              {statsTemporada.map((s) => (
+                <div key={s.lbl} className="text-center">
+                  <span className="block text-lg font-semibold text-gray-900">{s.val}</span>
+                  <span className="text-xs text-gray-400">{s.lbl}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {jugador.descripcion && (
           <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4">
             <p className="text-xs text-gray-400 mb-1">Sobre mí</p>
             <p className="text-sm text-gray-700">{jugador.descripcion}</p>
+          </div>
+        )}
+
+        {/* Verificación pendiente */}
+        {!jugador.verificado && jugador.licencia && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+            <p className="text-xs text-amber-600 font-medium">Verificación pendiente</p>
+            <p className="text-xs text-amber-500 mt-0.5">Licencia nº {jugador.licencia} · En revisión</p>
+          </div>
+        )}
+
+        {/* Sin licencia = invitar a verificarse */}
+        {!jugador.verificado && !jugador.licencia && (
+          <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 mb-4">
+            <p className="text-xs text-gray-500">¿Eres este jugador? Añade tu nº de licencia federativa en tu perfil para solicitar la verificación.</p>
           </div>
         )}
 

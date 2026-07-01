@@ -76,9 +76,14 @@ export default function MiPerfil() {
         categoria: perfil.categoria,
         posicion: perfil.posicion,
         edad: parseInt(perfil.edad) || null,
-        altura: parseInt(perfil.altura) || null,
+        altura: parseInt(perfil.altura) >= 100 && parseInt(perfil.altura) <= 220 ? parseInt(perfil.altura) : null,
         temporadas: parseInt(perfil.temporadas) || null,
         descripcion: perfil.descripcion,
+        partidos: parseInt(perfil.partidos) || null,
+        minutos: parseInt(perfil.minutos) || null,
+        goles: parseInt(perfil.goles) || null,
+        asistencias: parseInt(perfil.asistencias) || null,
+        licencia: perfil.licencia || null,
       })
       .eq('id', perfil.id)
 
@@ -226,7 +231,7 @@ export default function MiPerfil() {
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Altura (cm)</label>
-              <input name="altura" type="number" value={perfil?.altura || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+              <input name="altura" type="number" min="100" max="220" placeholder="ej: 178" value={perfil?.altura || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Temporadas</label>
@@ -291,7 +296,6 @@ export default function MiPerfil() {
                 Juvenil
               </button>
             </div>
-
             {perfil?.tipoFutbol && (
               <>
                 <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
@@ -316,6 +320,52 @@ export default function MiPerfil() {
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Sobre mí</p>
           <textarea name="descripcion" value={perfil?.descripcion || ''} onChange={handleChange} rows={3} placeholder="Cuéntale a los scouts quién eres..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 resize-none" />
         </div>
+
+        {perfil?.rol === 'jugador' && (
+          <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Estadísticas temporada actual</p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Partidos</label>
+                <input name="partidos" type="number" min="0" placeholder="ej: 24" value={perfil?.partidos || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Minutos</label>
+                <input name="minutos" type="number" min="0" placeholder="ej: 1840" value={perfil?.minutos || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Goles</label>
+                <input name="goles" type="number" min="0" placeholder="ej: 3" value={perfil?.goles || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Asistencias</label>
+                <input name="asistencias" type="number" min="0" placeholder="ej: 7" value={perfil?.asistencias || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {perfil?.rol === 'jugador' && (
+          <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Verificación</p>
+            {perfil?.verificado ? (
+              <div className="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-2">
+                <span className="text-emerald-600 text-sm font-medium">✓ Perfil verificado</span>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-gray-400">Introduce tu nº de licencia federativa para solicitar la verificación. Lo revisaremos manualmente.</p>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Nº de licencia federativa</label>
+                  <input name="licencia" type="text" placeholder="ej: 277012345" value={perfil?.licencia || ''} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+                </div>
+                {perfil?.licencia && (
+                  <p className="text-xs text-amber-500">Pendiente de revisión · Guarda los cambios para enviar la solicitud</p>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Trayectoria</p>
