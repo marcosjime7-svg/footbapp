@@ -299,7 +299,7 @@ export default function Home() {
         </div>
 
         <div className="pb-6 pt-2 flex justify-center">
-          
+          <a
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"
