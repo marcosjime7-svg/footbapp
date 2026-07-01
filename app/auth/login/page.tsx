@@ -57,6 +57,15 @@ export default function Login() {
           <p className="text-center text-xs text-gray-400">¿No tienes cuenta? <a href="/auth/registro" className="text-emerald-600">Regístrate gratis</a></p>
         </div>
       </div>
+      <a
+        href="https://www.instagram.com/footbapp.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-6 flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-emerald-600 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+        @footbapp.app
+      </a>
     </main>
   )
 }
