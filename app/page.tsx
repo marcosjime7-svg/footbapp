@@ -112,7 +112,7 @@ export default function Home() {
           Hazte visible.<br/>Encuentra talento.
         </h1>
         <p className="text-gray-500 text-base mb-8 leading-relaxed">
-          La plataforma de fútbol aficionado y juvenil de Madrid
+          La plataforma de fútbol aficionado y juvenil de Madrid donde jugadores se dan a conocer y scouts y equipos encuentran su próximo fichaje.
         </p>
         <a href="/auth/registro" className="block w-full bg-emerald-600 text-white rounded-xl py-3.5 text-sm font-medium mb-3">
           Crear perfil gratis
