@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '../utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CATEGORIAS_AFICIONADO, CATEGORIAS_JUVENIL } from '../utils/categorias'
+import { usePushNotifications } from '../hooks/usePushNotifications'
 
 const POSICIONES = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
@@ -46,6 +47,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [usuario, setUsuario] = useState<any>(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
+
+  usePushNotifications(usuario?.id ?? null)
 
   const supabase = createClient()
   const router = useRouter()

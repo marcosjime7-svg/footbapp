@@ -6,5 +6,7 @@
 		"url": "https://footbapp.app",
 		"cleartext": true
 	},
-	"packageClassList": []
+	"packageClassList": [
+		"PushNotificationsPlugin"
+	]
 }
