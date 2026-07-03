@@ -1,4 +1,4 @@
- name: Build and Deploy iOS
+name: Build and Deploy iOS
 
 on:
   push:
