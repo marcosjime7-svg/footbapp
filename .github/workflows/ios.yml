@@ -46,7 +46,7 @@ jobs:
 
       - name: Bump build number
         run: |
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 3" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 4" ios/App/App/Info.plist
 
       - name: Setup certificates
         env:
