@@ -1,4 +1,4 @@
-name: Build and Deploy iOS
+ name: Build and Deploy iOS
 
 on:
   push:
@@ -30,6 +30,12 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
+      - name: Add privacy permissions to Info.plist
+        run: |
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string 'Footbapp necesita acceso a la cámara para subir tu foto de perfil y vídeos.'" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'Footbapp necesita acceso al micrófono para grabar vídeos.'" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string 'Footbapp necesita acceso a tus fotos para subir tu foto de perfil y vídeos.'" ios/App/App/Info.plist
+
       - name: Set app icon
         run: |
           ICON_DIR="ios/App/App/Assets.xcassets/AppIcon.appiconset"
@@ -46,7 +52,7 @@ jobs:
 
       - name: Bump build number
         run: |
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 4" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 5" ios/App/App/Info.plist
 
       - name: Setup certificates
         env:
