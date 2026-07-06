@@ -19,9 +19,9 @@ android {
     signingConfigs {
         release {
             storeFile file("C:/Users/Marco/Desktop/footbapp/footbapp-new.keystore")
-            storePassword "oreo73420845"
+            storePassword "Oreo73420845"
             keyAlias "footbapp"
-            keyPassword "oreo73420845"
+            keyPassword "Oreo73420845"
         }
     }
     buildTypes {
