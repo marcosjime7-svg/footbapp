@@ -197,7 +197,7 @@ export default function MiPerfil() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <button onClick={() => router.push('/')} className="text-gray-400 text-sm">←</button>
         <span className="text-sm font-medium text-gray-900">Mi perfil</span>
       </div>
