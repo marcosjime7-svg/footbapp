@@ -35,9 +35,9 @@ export default function Login() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm">
-        foot<span className="text-emerald-600">bapp</span>
+        <p className="text-lg font-semibold mb-1">foot<span className="text-emerald-600">bapp</span></p>
         <p className="text-sm text-gray-500 mb-6">Entra en tu cuenta</p>
 
         {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
@@ -51,13 +51,16 @@ export default function Login() {
             <label className="text-xs text-gray-500 mb-1 block">Contraseña</label>
             <input name="password" type="password" value={form.password} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500" placeholder="Tu contraseña" />
           </div>
-          <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-2 disabled:opacity-50">
+          <div className="text-right">
+            <a href="/auth/reset-password" className="text-xs text-gray-400 hover:text-emerald-600">¿Olvidaste tu contraseña?</a>
+          </div>
+          <button onClick={handleSubmit} disabled={loading} className="w-full bg-emerald-600 text-white rounded-lg py-2.5 text-sm font-medium mt-1 disabled:opacity-50">
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
           <p className="text-center text-xs text-gray-400">¿No tienes cuenta? <a href="/auth/registro" className="text-emerald-600">Regístrate gratis</a></p>
         </div>
       </div>
-      <a
+      
         href="https://www.instagram.com/footbapp.app/"
         target="_blank"
         rel="noopener noreferrer"
