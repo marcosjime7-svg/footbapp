@@ -43,7 +43,6 @@ export default function Registro() {
     setLoading(true)
     setError('')
 
-    // Verificar Turnstile
     const turnstileRes = await fetch('/api/verify-turnstile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,8 +97,8 @@ export default function Registro() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm">
+    <main className="min-h-screen bg-gray-50 px-4 overflow-y-auto" style={{ paddingTop: 'max(2rem, env(safe-area-inset-top))', paddingBottom: '2rem' }}>
+      <div className="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto">
         <h1 className="text-lg font-semibold mb-1">foot<span className="text-emerald-600">bapp</span></h1>
         <p className="text-sm text-gray-500 mb-6">Crea tu perfil y hazte visible</p>
 
@@ -201,7 +200,6 @@ export default function Registro() {
                   Juvenil
                 </button>
               </div>
-
               {form.tipoFutbol && (
                 <>
                   <label className="text-xs text-gray-500 mb-1 block">Categoría</label>
