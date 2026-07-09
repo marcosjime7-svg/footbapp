@@ -8,7 +8,7 @@ import { usePushNotifications } from '../hooks/usePushNotifications'
 
 const POSICIONES = ['Portero', 'Lateral derecho', 'Lateral izquierdo', 'Central', 'Pivote', 'Centrocampista', 'Mediapunta', 'Extremo derecho', 'Extremo izquierdo', 'Delantero']
 
-function MensajesBadge({ userId }: { userId: string }) {
+function UnreadBadge({ userId }: { userId: string }) {
   const [count, setCount] = useState(0)
   const supabase = createClient()
 
@@ -24,15 +24,11 @@ function MensajesBadge({ userId }: { userId: string }) {
     fetchCount()
   }, [userId])
 
+  if (count === 0) return null
   return (
-    <a href="/mensajes" className="text-sm text-gray-600 flex items-center gap-1">
-      Mensajes
-      {count > 0 && (
-        <span className="bg-emerald-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">
-          {count}
-        </span>
-      )}
-    </a>
+    <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium">
+      {count}
+    </span>
   )
 }
 
@@ -118,7 +114,7 @@ export default function Home() {
       <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div className="flex items-center gap-3">
           <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
-          <a
+          
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"
@@ -195,14 +191,10 @@ export default function Home() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-50 pb-20">
+    <main className="min-h-screen bg-gray-50 pb-24">
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
         <span className="text-lg font-semibold">foot<span className="text-emerald-600">bapp</span></span>
-        <div className="flex items-center gap-3">
-          <a href="/perfil" className="text-sm text-gray-600">Mi perfil</a>
-          <MensajesBadge userId={usuario.id} />
-          <button onClick={handleLogout} className="text-sm text-gray-400">Salir</button>
-        </div>
+        <button onClick={handleLogout} className="text-sm text-gray-400">Salir</button>
       </header>
 
       <div className="max-w-lg mx-auto px-4 py-4">
@@ -302,7 +294,7 @@ export default function Home() {
         </div>
 
         <div className="pb-6 pt-2 flex justify-center">
-          <a
+          
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"
@@ -313,6 +305,22 @@ export default function Home() {
           </a>
         </div>
       </div>
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center justify-around px-4 z-50" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+        <a href="/" className="flex flex-col items-center gap-0.5 py-2 text-emerald-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span className="text-xs">Buscar</span>
+        </a>
+        <a href="/mensajes" className="flex flex-col items-center gap-0.5 py-2 text-gray-400 relative">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span className="text-xs">Mensajes</span>
+          <UnreadBadge userId={usuario.id} />
+        </a>
+        <a href="/perfil" className="flex flex-col items-center gap-0.5 py-2 text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span className="text-xs">Mi perfil</span>
+        </a>
+      </nav>
     </main>
   )
 }
