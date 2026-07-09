@@ -114,7 +114,7 @@ export default function Home() {
       <header className="px-6 py-4 flex items-center justify-between border-b border-gray-100">
         <div className="flex items-center gap-3">
           <span className="text-xl font-semibold">foot<span className="text-emerald-600">bapp</span></span>
-          
+          <a
             href="https://www.instagram.com/footbapp.app/"
             target="_blank"
             rel="noopener noreferrer"

@@ -60,7 +60,7 @@ export default function Login() {
           <p className="text-center text-xs text-gray-400">¿No tienes cuenta? <a href="/auth/registro" className="text-emerald-600">Regístrate gratis</a></p>
         </div>
       </div>
-      
+      <a
         href="https://www.instagram.com/footbapp.app/"
         target="_blank"
         rel="noopener noreferrer"
