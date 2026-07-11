@@ -66,8 +66,7 @@ export default function Mensajes() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-        <button onClick={() => router.push('/')} className="text-gray-400 text-sm">←</button>
+<div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>        <button onClick={() => router.push('/')} className="text-gray-400 text-sm">←</button>
         <span className="text-sm font-medium text-gray-900">Mensajes</span>
         {totalNoLeidos > 0 && (
           <span className="bg-emerald-500 text-white text-xs rounded-full px-2 py-0.5 font-medium">
