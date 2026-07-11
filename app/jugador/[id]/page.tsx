@@ -80,8 +80,7 @@ export default function PerfilJugador() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="bg-emerald-700 px-4 pt-4 pb-6">
-        <button onClick={() => router.back()} className="text-emerald-200 text-sm mb-4 flex items-center gap-1">
+<div className="bg-emerald-700 px-4 pb-6" style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}>        <button onClick={() => router.back()} className="text-emerald-200 text-sm mb-4 flex items-center gap-1">
           ← Volver
         </button>
         {jugador.avatar_url ? (
